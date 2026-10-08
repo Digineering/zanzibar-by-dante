@@ -1,0 +1,99 @@
+{
+  "entries": [
+    {
+      "date": "2026-08-28",
+      "location": "Pongwe, Zanzibar",
+      "note": "Bagging plastic waste cleared from the bush line behind the beach. Full sacks stacked for collection.",
+      "photos": [
+        {
+          "src": "cleanups/2026-08-28/3e6a948918c7.jpg",
+          "thumb": "cleanups/2026-08-28/t_3e6a948918c7.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "3e6a948918c7",
+          "order": 0,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/815f35e4a778.jpg",
+          "thumb": "cleanups/2026-08-28/t_815f35e4a778.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "815f35e4a778",
+          "order": 1,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/06ac36e0126d.jpg",
+          "thumb": "cleanups/2026-08-28/t_06ac36e0126d.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "06ac36e0126d",
+          "order": 2,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/33cc54d960f9.jpg",
+          "thumb": "cleanups/2026-08-28/t_33cc54d960f9.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "33cc54d960f9",
+          "order": 3,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/db5ae8e15da3.jpg",
+          "thumb": "cleanups/2026-08-28/t_db5ae8e15da3.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "db5ae8e15da3",
+          "order": 4,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/19b05d71879e.jpg",
+          "thumb": "cleanups/2026-08-28/t_19b05d71879e.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "19b05d71879e",
+          "order": 5,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/db653775b86d.jpg",
+          "thumb": "cleanups/2026-08-28/t_db653775b86d.jpg",
+          "w": 810,
+          "h": 1080,
+          "hash": "db653775b86d",
+          "order": 6,
+          "dated": "exif"
+        },
+        {
+          "src": "cleanups/2026-08-28/88105b924552.jpg",
+          "thumb": "cleanups/2026-08-28/t_88105b924552.jpg",
+          "w": 1600,
+          "h": 1200,
+          "hash": "88105b924552",
+          "order": 7,
+          "dated": "assigned"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "location": "Pongwe, Zanzibar",
+      "note": "Plastic bottles gathered off the sand and bagged on the beach for removal.",
+      "photos": [
+        {
+          "src": "cleanups/2026-08-14/c94ec39eab42.jpg",
+          "thumb": "cleanups/2026-08-14/t_c94ec39eab42.jpg",
+          "w": 765,
+          "h": 1020,
+          "hash": "c94ec39eab42",
+          "order": 0,
+          "dated": "exif"
+        }
+      ]
+    }
+  ]
+}
