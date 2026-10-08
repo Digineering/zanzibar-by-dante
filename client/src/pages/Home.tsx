@@ -153,6 +153,7 @@ function Nav() {
     { label: "About", href: "#about" },
     { label: "Tours", href: "#tours" },
     { label: "Clean Beach", href: "#clean-beach" },
+    { label: "Reviews", href: "#reviews" },
     { label: "Contact", href: "#contact" },
   ];
 
@@ -402,7 +403,7 @@ function About() {
                 { icon: "🏡", label: "From Pongwe village" },
                 { icon: "🐢", label: "Marine advocate" },
                 { icon: "♻️", label: "Community cleaner" },
-                { icon: "⭐", label: "5-star rated" },
+                { icon: "🤝", label: "Books direct on WhatsApp" },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2 bg-[oklch(0.93_0.035_80)] px-4 py-2 rounded-full">
                   <span className="text-base">{item.icon}</span>
@@ -704,8 +705,8 @@ function WhyDante() {
     { icon: "🏝️", title: "Born local", body: "I grew up on this beach. I know every reef, every current, and every honest operator on the island." },
     { icon: "🔒", title: "No hidden costs", body: "The price I quote is the price you pay. I take my commission from operators, never by inflating your price." },
     { icon: "👥", title: "Private experiences", body: "No crowded group boats. You get my full attention and the flexibility to go where you actually want to go." },
-    { icon: "⭐", title: "Verified reviews", body: "Real reviews from real guests on Google and TripAdvisor. I don't ask for reviews — guests leave them because they want to." },
-    { icon: "♻️", title: "Environmental action", body: "Every booking funds my daily beach cleanup. You're not just visiting Zanzibar — you're helping protect it." },
+    { icon: "📸", title: "Proof, not promises", body: "Every beach cleanup is logged on this site with dated photos. My guest reviews will live on Google, where nobody can edit them." },
+    { icon: "♻️", title: "Environmental action", body: "Every booking funds my beach cleanups. You're not just visiting Zanzibar — you're helping protect it." },
     { icon: "📱", title: "Always available", body: "I handle everything personally on WhatsApp. Message me any time — before, during, or after your trip." },
   ];
 
@@ -784,98 +785,67 @@ function Gallery() {
 }
 
 // ─── Reviews ──────────────────────────────────────────────────────────────────
-const REVIEWS = [
-  {
-    name: "Sarah M.",
-    country: "🇩🇪 Germany",
-    stars: 5,
-    text: "Dante is the real deal. He took us to a snorkeling spot we never would have found on our own, the prices were completely fair, and we felt safe the entire time. The beach cleanup story made us love him even more.",
-    trip: "Mnemba Atoll Snorkeling",
-  },
-  {
-    name: "James & Ellie",
-    country: "🇬🇧 United Kingdom",
-    stars: 5,
-    text: "Best decision we made on our honeymoon. Dante arranged our entire week — boat trips, Stone Town, even a sunset dhow. Everything went perfectly. He's honest, reliable, and genuinely passionate about his island.",
-    trip: "Personal Guide Service",
-  },
-  {
-    name: "Marie-Claire",
-    country: "🇫🇷 France",
-    stars: 5,
-    text: "We saw dolphins within 20 minutes of leaving the beach. Dante knew exactly where to go. The snorkeling was incredible — turtles, huge fish, crystal clear water. And knowing our money goes to cleaning the beach made it even better.",
-    trip: "Full Day Dhow with BBQ",
-  },
-  {
-    name: "Pieter V.",
-    country: "🇳🇱 Netherlands",
-    stars: 5,
-    text: "I was sceptical of beach guides after bad experiences elsewhere. Dante is completely different. He's professional, honest about what you'll see, and there are no hidden costs. I've already recommended him to three friends.",
-    trip: "Local Sailing & Fish",
-  },
-];
+// Set this to Dante's Google review link once his Google Business Profile is live
+// (Business Profile > "Ask for reviews" gives a g.page/r/... link). Leave empty until then.
+const GOOGLE_REVIEW_URL = "";
+// Set this to his Google Maps listing URL so visitors can read existing reviews.
+const GOOGLE_PROFILE_URL = "";
+
+const GoogleIcon = () => (
+  <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+  </svg>
+);
 
 function Reviews() {
+  const live = Boolean(GOOGLE_REVIEW_URL || GOOGLE_PROFILE_URL);
   return (
     <section id="reviews" className="py-20 md:py-28 bg-[oklch(0.98_0.01_80)]">
       <div className="container">
-        <AnimatedSection className="mb-12">
-          <span className="gold-rule" />
-          <h2 className="font-display text-4xl md:text-5xl font-semibold text-[oklch(0.22_0.06_250)] mb-3">
-            What guests say
+        <AnimatedSection className="max-w-3xl mx-auto text-center">
+          <span className="gold-rule mx-auto" />
+          <h2 className="font-display text-4xl md:text-5xl font-semibold text-[oklch(0.22_0.06_250)] mb-4">
+            Guest reviews
           </h2>
-          <p className="font-body text-base text-[oklch(0.45_0.04_250)]">
-            Real reviews. No editing, no selection bias.
-          </p>
+          <div className="bg-white rounded-2xl border border-[oklch(0.88_0.02_80)] shadow-sm p-7 md:p-10 mt-8">
+            <div className="inline-flex items-center gap-2 bg-[oklch(0.93_0.035_80)] text-[oklch(0.45_0.04_250)] font-body text-xs font-semibold tracking-[0.15em] uppercase px-4 py-1.5 rounded-full mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.55_0.12_195)]" />
+              Brand new website
+            </div>
+            <p className="font-display text-2xl md:text-3xl text-[oklch(0.22_0.06_250)] leading-snug mb-4">
+              No reviews here yet, and I won't make any up.
+            </p>
+            <p className="font-body text-base text-[oklch(0.4_0.04_250)] leading-relaxed mb-8 max-w-xl mx-auto">
+              This site is new. My guest reviews will live on Google, where nobody can edit or pick them, and they will show up here as they come in. Until then, message me on WhatsApp and ask me anything. I'm happy to share photos and details of past trips.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              {GOOGLE_REVIEW_URL && (
+                <a href={GOOGLE_REVIEW_URL} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-white border border-[oklch(0.85_0.02_80)] text-[oklch(0.22_0.06_250)] font-body font-medium text-sm px-6 py-3 rounded-full hover:shadow-md transition-shadow">
+                  <GoogleIcon /> Been on a trip? Review me on Google
+                </a>
+              )}
+              {GOOGLE_PROFILE_URL && (
+                <a href={GOOGLE_PROFILE_URL} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-white border border-[oklch(0.85_0.02_80)] text-[oklch(0.22_0.06_250)] font-body font-medium text-sm px-6 py-3 rounded-full hover:shadow-md transition-shadow">
+                  <GoogleIcon /> Read my reviews on Google
+                </a>
+              )}
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-[oklch(0.55_0.12_195)] text-white font-body font-medium text-sm px-6 py-3 rounded-full hover:shadow-lg transition-shadow">
+                Ask me on WhatsApp
+              </a>
+            </div>
+            {!live && (
+              <p className="font-body text-xs text-[oklch(0.55_0.03_250)] mt-6 inline-flex items-center gap-2">
+                <GoogleIcon /> Google reviews coming soon
+              </p>
+            )}
+          </div>
         </AnimatedSection>
-        <div className="grid md:grid-cols-2 gap-6">
-          {REVIEWS.map((r, i) => (
-            <motion.div
-              key={r.name}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay: i * 0.08 }}
-              className="bg-white rounded-2xl p-7 shadow-sm border border-[oklch(0.88_0.02_80)]"
-            >
-              <div className="flex items-center gap-1 mb-4">
-                {Array.from({ length: r.stars }).map((_, j) => (
-                  <svg key={j} className="w-4 h-4 text-[oklch(0.75_0.14_70)] fill-current" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                ))}
-              </div>
-              <blockquote className="font-body text-base text-[oklch(0.35_0.04_250)] leading-relaxed mb-5 italic">
-                "{r.text}"
-              </blockquote>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-body text-sm font-semibold text-[oklch(0.22_0.06_250)]">{r.name}</div>
-                  <div className="font-body text-xs text-[oklch(0.55_0.04_250)]">{r.country}</div>
-                </div>
-                <span className="font-body text-xs bg-[oklch(0.93_0.035_80)] text-[oklch(0.45_0.04_250)] px-3 py-1 rounded-full">
-                  {r.trip}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-        <div className="mt-10 text-center">
-          <a
-            href="https://www.google.com/maps"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-body text-sm text-[oklch(0.55_0.12_195)] hover:underline"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            See all Google reviews
-          </a>
-        </div>
       </div>
     </section>
   );
@@ -973,7 +943,7 @@ export default function Home() {
       <WhyDante />
       <CleanBeach />
       <Gallery />
-      {/* <Reviews /> hidden: placeholder quotes, replace with real Google reviews before enabling */}
+      <Reviews />
       <Contact />
       <Footer />
       <WhatsAppButton />
