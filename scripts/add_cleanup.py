@@ -4,6 +4,15 @@
 Usage:
   python scripts/add_cleanup.py PHOTO [PHOTO ...] [--date YYYY-MM-DD]
          [--location "Pongwe, Zanzibar"] [--note "What happened"]
+         [--before PHOTO] [--after PHOTO] [--haul PHOTO]
+
+The proof set (from Oct 2026 every cleanup must have one):
+  --before  the beach area before cleaning
+  --after   the same area after cleaning
+  --haul    the plastic collected
+Photos passed this way are added like any other and tagged with their role,
+so the site shows them as a Before / After / Haul strip. To tag photos that
+are already in the log, use scripts/set_roles.py.
 
 What it does:
   1. Reads each photo's capture date from EXIF (falls back to --date, then today).
@@ -59,12 +68,23 @@ def save_manifest(data: dict) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("photos", nargs="+")
+    ap.add_argument("photos", nargs="*")
     ap.add_argument("--date", help="Fallback date (YYYY-MM-DD) for photos with no EXIF date")
     ap.add_argument("--force-date", action="store_true", help="Use --date even when EXIF has a date")
     ap.add_argument("--location", default=None)
     ap.add_argument("--note", default=None)
+    ap.add_argument("--before", default=None)
+    ap.add_argument("--after", default=None)
+    ap.add_argument("--haul", default=None)
     args = ap.parse_args()
+
+    roles = {}
+    for role in ("before", "after", "haul"):
+        path = getattr(args, role)
+        if path:
+            roles[str(pathlib.Path(path))] = role
+            if path not in args.photos:
+                args.photos.append(path)
 
     data = load_manifest()
     by_date = {e["date"]: e for e in data["entries"]}
@@ -74,8 +94,19 @@ def main() -> int:
     for path in args.photos:
         raw = pathlib.Path(path).read_bytes()
         digest = hashlib.sha1(raw).hexdigest()[:12]
+        role = roles.get(str(pathlib.Path(path)))
         if digest in known:
-            print(f"skip duplicate: {path}")
+            if role:
+                for e in data["entries"]:
+                    for p in e["photos"]:
+                        if p["hash"] == digest:
+                            for q in e["photos"]:
+                                if q.get("role") == role:
+                                    q.pop("role")
+                            p["role"] = role
+                print(f"tagged existing {path} as {role}")
+            else:
+                print(f"skip duplicate: {path}")
             continue
         img = Image.open(path)
         exif_date = capture_date(img)
@@ -108,6 +139,11 @@ def main() -> int:
             "order": len(entry["photos"]),
             "dated": "exif" if exif_date and not args.force_date else "assigned",
         })
+        if role:
+            for q in entry["photos"][:-1]:
+                if q.get("role") == role:
+                    q.pop("role")
+            entry["photos"][-1]["role"] = role
         known.add(digest)
         added += 1
         print(f"added {path} -> {date}")

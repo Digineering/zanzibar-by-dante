@@ -9,17 +9,29 @@
  *  - The log opens on the newest month. Every earlier month stays one tap away
  *    in the month tabs, so nothing ever falls off; "All" shows the full history
  *    back to the first cleanup.
+ *  - From Oct 2026 every cleanup carries a proof set: a before shot, an after
+ *    shot and the haul. Photos tagged with a role (scripts/set_roles.py or the
+ *    --before/--after/--haul flags) render as a labelled strip at the top of
+ *    the entry and lead the featured card. Untagged entries show as before.
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import log from "@/data/cleanups.json";
 
-type Photo = { src: string; thumb: string; w: number; h: number; hash: string };
+type Role = "before" | "after" | "haul";
+type Photo = { src: string; thumb: string; w: number; h: number; hash: string; role?: Role };
 type Entry = { date: string; location: string; note: string; photos: Photo[] };
 
 const LOGO_CLEAN_BEACH = "media/deployed/logo_clean_beach_initiative_f7e45a43.png";
 const ENTRIES: Entry[] = [...(log.entries as Entry[])].sort((a, b) => b.date.localeCompare(a.date));
 const THUMBS_PER_CARD = 8;
+const ROLE_ORDER: Role[] = ["before", "after", "haul"];
+const ROLE_LABEL: Record<Role, string> = { before: "Before", after: "After", haul: "The haul" };
+
+/** The cleanup's proof set in display order, or [] when none is tagged. */
+function proofSet(entry: Entry): Photo[] {
+  return ROLE_ORDER.map((r) => entry.photos.find((p) => p.role === r)).filter((p): p is Photo => !!p);
+}
 
 
 function parseDate(iso: string) {
@@ -89,8 +101,10 @@ function Lightbox({ slides, index, onClose, onMove }: {
 // ─── One log entry ───────────────────────────────────────────────────────────
 function EntryCard({ entry, onOpen }: { entry: Entry; onOpen: (photo: Photo) => void }) {
   const d = parseDate(entry.date);
-  const shown = entry.photos.slice(0, THUMBS_PER_CARD);
-  const extra = entry.photos.length - shown.length;
+  const proof = proofSet(entry);
+  const rest = entry.photos.filter((p) => !p.role);
+  const shown = rest.slice(0, proof.length ? THUMBS_PER_CARD - 4 : THUMBS_PER_CARD);
+  const extra = rest.length - shown.length;
   return (
     <motion.article
       layout
@@ -113,7 +127,24 @@ function EntryCard({ entry, onOpen }: { entry: Entry; onOpen: (photo: Photo) => 
           <span>📷 {entry.photos.length} photo{entry.photos.length === 1 ? "" : "s"}</span>
         </div>
         {entry.note && <p className="font-body text-sm md:text-base text-[oklch(0.3_0.04_250)] leading-relaxed mb-4">{entry.note}</p>}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        {proof.length > 0 && (
+          <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3">
+            {proof.map((p) => (
+              <button
+                key={p.hash}
+                onClick={() => onOpen(p)}
+                className="relative aspect-[4/5] overflow-hidden rounded-xl bg-[oklch(0.93_0.035_80)] group focus:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.12_195)]"
+                aria-label={`Open ${ROLE_LABEL[p.role!]} photo from ${fmtLong(entry.date)}`}
+              >
+                <img src={p.thumb} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <span className="absolute left-2 top-2 font-body text-[11px] font-semibold uppercase tracking-wider bg-[oklch(0.22_0.06_250/0.85)] text-white px-2 py-1 rounded-full">
+                  {ROLE_LABEL[p.role!]}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+        {shown.length > 0 && <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
           {shown.map((p, i) => {
             const isLast = i === shown.length - 1 && extra > 0;
             return (
@@ -130,7 +161,7 @@ function EntryCard({ entry, onOpen }: { entry: Entry; onOpen: (photo: Photo) => 
               </button>
             );
           })}
-        </div>
+        </div>}
       </div>
     </motion.article>
   );
@@ -151,6 +182,7 @@ export default function CleanBeachLog() {
   const [lightbox, setLightbox] = useState<{ slides: Slide[]; index: number } | null>(null);
 
   const latest = ENTRIES[0];
+  const latestHero = latest ? (latest.photos.find((p) => p.role === "after") ?? latest.photos[0]) : undefined;
   const first = ENTRIES[ENTRIES.length - 1];
   const totalPhotos = ENTRIES.reduce((n, e) => n + e.photos.length, 0);
   const visible: Entry[] = active === "all" ? ENTRIES : months.find(([k]) => k === active)?.[1] ?? [];
@@ -207,9 +239,9 @@ export default function CleanBeachLog() {
 
           {latest && (
             <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.55, delay: 0.1 }}>
-              <button onClick={() => openPhoto([latest], latest.photos[0])} className="relative block w-full text-left group" aria-label="Open latest cleanup photos">
+              <button onClick={() => openPhoto([latest], latestHero!)} className="relative block w-full text-left group" aria-label="Open latest cleanup photos">
                 <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl bg-[oklch(0.93_0.035_80)]">
-                  <img src={latest.photos[0].src} alt={`Dante's latest beach cleanup, ${fmtLong(latest.date)}`} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" />
+                  <img src={latestHero!.src} alt={`Dante's latest beach cleanup, ${fmtLong(latest.date)}`} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" />
                 </div>
                 <div className={`absolute -bottom-5 -left-3 md:-left-5 bg-[oklch(0.22_0.06_250)] text-white rounded-2xl p-5 max-w-[230px] shadow-xl`}>
                   <p className="font-body text-[11px] uppercase tracking-[0.18em] text-white/60 mb-1">Latest cleanup</p>
@@ -272,7 +304,7 @@ export default function CleanBeachLog() {
           </div>
 
           <p className="font-body text-xs text-[oklch(0.5_0.03_250)] mt-6">
-            Dates come from each photo's camera timestamp. New cleanups appear here automatically when Dante sends them in.
+            Dates come from each photo's camera timestamp. From October 2026 every cleanup shows the same patch of beach before and after, plus the plastic collected. New cleanups appear here automatically when Dante sends them in.
           </p>
         </div>
       </div>

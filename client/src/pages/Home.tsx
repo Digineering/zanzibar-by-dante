@@ -916,9 +916,17 @@ function Footer() {
             <span className="font-script text-sm text-[oklch(0.75_0.14_70)]">by Dante</span>
           </div>
         </div>
-        <p className="font-body text-xs text-white/40 text-center">
-          Pongwe, Zanzibar, Tanzania · Every booking supports the Clean Beach Initiative
-        </p>
+        <div className="text-center">
+          <p className="font-body text-xs text-white/40">
+            Pongwe, Zanzibar, Tanzania · Every booking supports the Clean Beach Initiative
+          </p>
+          <p className="font-body text-xs text-white/55 mt-1">
+            Website sponsored by{" "}
+            <a href="https://digineering.co.za" target="_blank" rel="noopener" className="text-white/80 hover:text-[oklch(0.75_0.14_70)] underline-offset-2 hover:underline">Digineering</a>
+            {" "}and{" "}
+            <a href="https://nuorai.com" target="_blank" rel="noopener" className="text-white/80 hover:text-[oklch(0.75_0.14_70)] underline-offset-2 hover:underline">NUORAi</a>
+          </p>
+        </div>
         <a
           href={WHATSAPP_URL}
           target="_blank"
